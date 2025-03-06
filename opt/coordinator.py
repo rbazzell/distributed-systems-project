@@ -19,12 +19,15 @@ class Coordinator:
 
     def run(self):
         logging.info("Starting coordinator with CMD interface. Type 'exit' to quit, or use input.txt.")
+        input_file = 'input.txt'
         while True:
             matrix_a, matrix_b, n, operation = self.get_input()
             if operation == 'exit':
                 logging.info("Exiting coordinator.")
                 break
             self.process_operation(n, operation, matrix_a, matrix_b)
+            if os.path.exists(input_file):
+                break
 
     def get_input(self):
         """Get input from file or CMD."""
@@ -199,13 +202,17 @@ class Coordinator:
     def assign_task(self, worker_id, task):
         """Send task to a worker and get result."""
         worker_port = 5000 + worker_id
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(('worker' + str(worker_id), worker_port))
-            message = json.dumps({'task': task})
-            s.sendall(message.encode('utf-8'))
-            data = s.recv(1024)
-            response = json.loads(data.decode('utf-8'))
-            return response['result']
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect(('worker' + str(worker_id), worker_port))
+                message = json.dumps({'task': task})
+                s.sendall(message.encode('utf-8'))
+                data = s.recv(1024)
+                response = json.loads(data.decode('utf-8'))
+                return response['result']
+        except Exception as e:
+            logging.error(f"worker id = {worker_id} & worker port = {worker_port}")
+            logging.error(f"REFUSED CONNECTION: {e}")
 
 if __name__ == '__main__':
     node_id = int(os.getenv('NODE_ID', '0'))
