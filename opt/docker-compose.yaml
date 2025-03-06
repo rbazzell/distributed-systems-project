@@ -69,6 +69,28 @@ services:
     networks:
       - matrix-net
 
+  worker6:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - NODE_ID=6
+      - DELAY=1.0
+    hostname: worker6
+    networks:
+      - matrix-net
+
+  worker7:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - NODE_ID=7
+      - DELAY=1.0
+    hostname: worker7
+    networks:
+      - matrix-net
+
 networks:
   matrix-net:
     driver: bridge
