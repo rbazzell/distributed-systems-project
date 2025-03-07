@@ -69,7 +69,6 @@ def process_result(task_id, result):
         
         task = active_tasks[task_id]
 
-        #NOTE: THIS STATEMENT IS THE ISSUE - it always returns None
         parent_id = task.parent_id
         
         
@@ -85,7 +84,7 @@ def process_result(task_id, result):
                     pending_results[parent_id][1][i] = result
                     pending_results[parent_id][0] += 1
                     break
-            
+            print(f"Pending Results = {pending_results}")
             # Check if all subtasks are complete
             if pending_results[parent_id][0] == 7:  # 7 for Strassen
                 logging.debug("\n\n\n\n\nALL RESULTS COLLECTED")
@@ -108,6 +107,7 @@ def process_result(task_id, result):
                 # Clean up
                 del pending_results[parent_id]
         else:
+            print("FINAL")
             # This is a top-level task
             if task_id in client_tasks:
                 # Unpad the result if needed
@@ -122,7 +122,6 @@ def process_result(task_id, result):
                 del client_tasks[task_id]
             
         # Remove completed task
-        print(f"help me please {pending_results}")
         del active_tasks[task_id]
 
 @app.route('/register', methods=['POST'])
@@ -141,7 +140,7 @@ def register():
 @app.route('/submit', methods=['POST'])
 def submit_task():
     """Endpoint for clients to submit matrix multiplication tasks"""
-    logging.debug("received request")
+    print("Recieved Submission")
     data = request.json
     matrix_a = np.array(data.get('matrix_a', []))
     matrix_b = np.array(data.get('matrix_b', []))
@@ -183,6 +182,43 @@ def submit_task():
         'task_id': task.task_id,
         'status': 'submitted'
     }), 200
+
+@app.route('/return', methods=['POST'])
+def return_task():
+    """Endpoint for clients to submit matrix multiplication tasks"""
+    print("Recieved Submission")
+    data = request.json
+    matrix_a = np.array(data.get('matrix_a', []))
+    matrix_b = np.array(data.get('matrix_b', []))
+    parent_id = data.get('parent_id')
+    
+    # Create the task
+    task = Task(
+        task_type=TaskType.MULTIPLY,
+        matrices=[matrix_a, matrix_b],
+        parent_id=parent_id
+    )
+    
+    # Register the task
+    with lock:
+        active_tasks[task.task_id] = task    
+    
+    # Get an available worker
+    worker_id, worker_url = get_available_worker()
+    if worker_id is None:
+        return jsonify({'error': 'No workers available'}), 503
+    
+    print(f"Sending task {task.task_id} to worker {worker_id}")
+    success = send_task_to_worker(worker_url, task)
+    
+    if not success:
+        return jsonify({'error': 'Failed to send task to worker'}), 500
+    
+    return jsonify({
+        'task_id': task.task_id,
+        'status': 'returned'
+    }), 200
+
 
 @app.route('/result', methods=['POST'])
 def receive_result():

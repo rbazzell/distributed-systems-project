@@ -68,15 +68,9 @@ def process_multiply_task(task):
         result = direct_matrix_multiplication(matrix_a, matrix_b)
         return send_result_to_coordinator(task_id, result)
     
-    # Otherwise, use Strassen's algorithm by creating a STRASSEN_DIVIDE task
-    divide_task = Task(
-        task_type=TaskType.STRASSEN_DIVIDE,
-        matrices=[matrix_a, matrix_b],
-        parent_id=task_id
-    )
     
     # Process the divide task directly since we're already on a worker
-    return process_strassen_divide_task(divide_task)
+    return process_strassen_divide_task(task)
 
 def process_strassen_divide_task(task):
     """Divide matrices according to Strassen's algorithm and create 7 subtasks"""
@@ -111,26 +105,12 @@ def process_strassen_divide_task(task):
         [np.subtract(a12, a22), np.add(b21, b22)]
     ]
     
-    # Create subtasks
-    subtask_ids = []
-    
     for i, product in enumerate(products):
-        subtask = Task(
-            task_type=TaskType.DIRECT_MULTIPLY if product[0].shape[0] <= 2 else TaskType.MULTIPLY,
-            matrices=product,
-            parent_id=task_id
-        )
-        subtask_ids.append(subtask.task_id)
-        
-        # Send subtask to coordinator to be distributed
-        send_result_to_coordinator(task_id, np.array(subtask.task_id))
-        
         # Send each subtask back to coordinator for processing
         # In a real implementation, we might want to batch these
         requests.post(
-            f"{COORDINATOR_URL}/submit",
+            f"{COORDINATOR_URL}/return",
             json={
-                'task_id': subtask.task_id,
                 'matrix_a': product[0].tolist(),
                 'matrix_b': product[1].tolist(),
                 'parent_id': task_id

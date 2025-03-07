@@ -1,7 +1,6 @@
 import numpy as np
 import hashlib
 import json
-import logging
 import time
 from enum import Enum
 
@@ -74,9 +73,6 @@ class Task:
     @classmethod
     def from_dict(cls, data):
         """Create a Task instance from a dictionary"""
-        logging.debug("\n\n\nIN UTILS\n\n")
-        logging.debug(data["matrices"])
-
         if "matrices" in data:
             matrices = [np.array(matrix) for matrix in data["matrices"]]
         else:
@@ -156,4 +152,4 @@ def direct_matrix_multiplication(A, B):
     """
     Direct matrix multiplication for small matrices
     """
-    return np.matmul(A, B)
+    return A @ B
