@@ -75,7 +75,6 @@ def process_result(task_id, result):
         
         
         if parent_id:
-            print("IN HERE")
             # This is a subtask, update the parent task's results
             if parent_id not in pending_results:
                 pending_results[parent_id] = [0, [None] * 7]
@@ -83,7 +82,6 @@ def process_result(task_id, result):
             # Find the position of this subtask in the parent's pending results
             pending_results[parent_id][1][task.m_number] = result
             pending_results[parent_id][0] += 1
-            print(f"Pending Results = {pending_results}")
             # Check if all subtasks are complete
             if pending_results[parent_id][0] == 7:  # 7 for Strassen
                 # Create combine task
@@ -103,7 +101,6 @@ def process_result(task_id, result):
                 
                 
         else:
-            print("FINAL")
             # This is a top-level task
             if task_id in client_tasks:
                 # Unpad the result if needed
@@ -111,9 +108,8 @@ def process_result(task_id, result):
                 if original_shapes:
                     result = unpad_matrix(result, original_shapes[0], original_shapes[1])
                 
-                print(f"Final result for task {task_id}:")
-                print(result)
-                
+                print(f"Final result for task {task_id}:\n{result}")
+
                 # Clean up
                 del client_tasks[task_id]
             
@@ -142,7 +138,6 @@ def register():
 @app.route('/submit', methods=['POST'])
 def submit_task():
     """Endpoint for clients to submit matrix multiplication tasks"""
-    print("Recieved Submission")
     data = request.json
     matrix_a = np.array(data.get('matrix_a', []))
     matrix_b = np.array(data.get('matrix_b', []))
@@ -188,7 +183,6 @@ def submit_task():
 @app.route('/return', methods=['POST'])
 def return_task():
     """Endpoint for clients to submit matrix multiplication tasks"""
-    print("Recieved Submission")
     data = request.json
     matrix_a = np.array(data.get('matrix_a', []))
     matrix_b = np.array(data.get('matrix_b', []))
