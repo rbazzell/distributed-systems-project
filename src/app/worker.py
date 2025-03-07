@@ -113,7 +113,8 @@ def process_strassen_divide_task(task):
             json={
                 'matrix_a': product[0].tolist(),
                 'matrix_b': product[1].tolist(),
-                'parent_id': task_id
+                'parent_id': task_id,
+                'm_number': i
             }
         )
     

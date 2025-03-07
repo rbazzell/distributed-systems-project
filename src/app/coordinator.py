@@ -70,6 +70,8 @@ def process_result(task_id, result):
         task = active_tasks[task_id]
 
         parent_id = task.parent_id
+
+        combine_task_generated = False
         
         
         if parent_id:
@@ -79,15 +81,11 @@ def process_result(task_id, result):
                 pending_results[parent_id] = [0, [None] * 7]
             
             # Find the position of this subtask in the parent's pending results
-            for i, subtask_id in enumerate(active_tasks[parent_id].subtasks_results or []):
-                if subtask_id == task_id:
-                    pending_results[parent_id][1][i] = result
-                    pending_results[parent_id][0] += 1
-                    break
+            pending_results[parent_id][1][task.m_number] = result
+            pending_results[parent_id][0] += 1
             print(f"Pending Results = {pending_results}")
             # Check if all subtasks are complete
             if pending_results[parent_id][0] == 7:  # 7 for Strassen
-                logging.debug("\n\n\n\n\nALL RESULTS COLLECTED")
                 # Create combine task
                 all_results = pending_results[parent_id][1]
                 combine_task = Task(
@@ -96,16 +94,14 @@ def process_result(task_id, result):
                     parent_id=parent_id
                 )
                 
-                # Register the task
-                active_tasks[combine_task.task_id] = combine_task
-                
-                # Send to an available worker
-                worker_id, worker_url = get_available_worker()
-                print(f"Sending combine task {combine_task.task_id} to worker {worker_id}")
-                send_task_to_worker(worker_url, combine_task)
-                
                 # Clean up
                 del pending_results[parent_id]
+
+                # Register the task
+                active_tasks[combine_task.task_id] = combine_task
+                combine_task_generated = True
+                
+                
         else:
             print("FINAL")
             # This is a top-level task
@@ -123,6 +119,12 @@ def process_result(task_id, result):
             
         # Remove completed task
         del active_tasks[task_id]
+
+    if combine_task_generated: #logic moved to prevent deadlocking
+        # Send to an available worker
+        worker_id, worker_url = get_available_worker()
+        print(f"Sending combine task {combine_task.task_id} to worker {worker_id}")
+        send_task_to_worker(worker_url, combine_task)
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -191,12 +193,14 @@ def return_task():
     matrix_a = np.array(data.get('matrix_a', []))
     matrix_b = np.array(data.get('matrix_b', []))
     parent_id = data.get('parent_id')
+    m_number = data.get('m_number')
     
     # Create the task
     task = Task(
         task_type=TaskType.MULTIPLY,
         matrices=[matrix_a, matrix_b],
-        parent_id=parent_id
+        parent_id=parent_id,
+        m_number=m_number
     )
     
     # Register the task

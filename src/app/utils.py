@@ -12,10 +12,11 @@ class TaskType(Enum):
     DIRECT_MULTIPLY = "direct_multiply"
 
 class Task:
-    def __init__(self, task_type, matrices=None, subtasks_results=None, parent_id=None):
+    def __init__(self, task_type, matrices=None, subtasks_results=None, parent_id=None, m_number=None):
         self.task_type = task_type
         self.matrices = matrices  # For MULTIPLY and STRASSEN_DIVIDE: [A, B]
         self.subtasks_results = subtasks_results  # For STRASSEN_COMBINE: [M1, M2, ..., M7]
+        self.m_number = m_number
         self.parent_id = parent_id  # ID of the parent task
         self.created_at = time.time()
         
@@ -59,7 +60,8 @@ class Task:
             "task_id": self.task_id,
             "task_type": self.task_type.value,
             "parent_id": self.parent_id,
-            "created_at": self.created_at
+            "created_at": self.created_at,
+            "m_number": self.m_number
         }
         
         if self.matrices is not None:
@@ -87,7 +89,8 @@ class Task:
             task_type=TaskType(data["task_type"]),
             parent_id=data.get("parent_id"),
             matrices=matrices,
-            subtasks_results=subtasks_results
+            subtasks_results=subtasks_results,
+            m_number=data.get("m_number")
         )
         task.task_id = data["task_id"]
         task.created_at = data["created_at"]
