@@ -5,11 +5,9 @@ import numpy as np
 import requests
 from flask import Flask, request, jsonify
 import threading
-import logging
 
 from utils import Task, TaskType, split_matrix, join_matrices, direct_matrix_multiplication
 
-logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -151,7 +149,6 @@ def process_direct_multiply_task(task):
 def process_task():
     """Endpoint for processing a task"""
     data = request.json
-    logging.debug(data)
     task = Task.from_dict(data)
     
     print(f"Worker {NODE_ID} processing task {task.task_id} of type {task.task_type.value}")

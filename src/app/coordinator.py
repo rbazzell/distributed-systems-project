@@ -5,7 +5,6 @@ import numpy as np
 import threading
 import requests
 from flask import Flask, request, jsonify
-import logging
 
 from utils import Task, TaskType, pad_matrices, unpad_matrix
 
