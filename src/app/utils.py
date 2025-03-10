@@ -170,3 +170,4 @@ def create_retry_session(retries=3, backoff_factor=0.5, status_forcelist=(500, 5
     )
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
+    return session

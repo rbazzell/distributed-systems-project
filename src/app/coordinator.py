@@ -4,11 +4,14 @@ import time
 import numpy as np
 import threading
 import requests
+import logging
 from flask import Flask, request, jsonify
 
-from utils import Task, TaskType, pad_matrices, unpad_matrix
+from utils import Task, TaskType, pad_matrices, unpad_matrix, create_retry_session
 
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
+session = create_retry_session()
 
 # Environment variables
 NODE_ID = os.environ.get('NODE_ID', 'coordinator')
@@ -49,10 +52,10 @@ def get_available_worker():
 def send_task_to_worker(worker_url, task):
     """Send a task to a worker"""
     try:
-        response = requests.post(
+        response = session.post(
             f"{worker_url}/process",
             json=task.to_dict(),
-            timeout=60,
+            timeout=10,
         )
         return response.status_code == 200
     except Exception as e:
@@ -234,4 +237,6 @@ def receive_result():
 
 if __name__ == '__main__':
     print(f"Starting coordinator node (ID: {NODE_ID}) on port {PORT}")
-    app.run(host='0.0.0.0', port=PORT, threaded=True, request_timeout=120)
+    
+    # Start the Flask application
+    app.run(host='0.0.0.0', port=PORT, threaded=True, debug=False)

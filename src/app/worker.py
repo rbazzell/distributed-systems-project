@@ -5,11 +5,14 @@ import numpy as np
 import requests
 from flask import Flask, request, jsonify
 import threading
+import logging
 
-from utils import Task, TaskType, split_matrix, join_matrices, direct_matrix_multiplication
+from utils import Task, TaskType, split_matrix, join_matrices, direct_matrix_multiplication, create_retry_session
 
 
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
+session = create_retry_session()
 
 # Environment variables
 NODE_ID = os.environ.get('NODE_ID', '0')
@@ -22,7 +25,7 @@ WORKER_URL = f"http://worker{NODE_ID}:{PORT}" if NODE_ID != 'coordinator' else f
 def register_with_coordinator():
     """Register this worker with the coordinator"""
     try:
-        response = requests.post(
+        response = session.post(
             f"{COORDINATOR_URL}/register",
             json={
                 'worker_id': NODE_ID,
@@ -43,13 +46,13 @@ def register_with_coordinator():
 def send_result_to_coordinator(task_id, result):
     """Send task result back to coordinator"""
     try:
-        response = requests.post(
+        response = session.post(
             f"{COORDINATOR_URL}/result",
             json={
                 'task_id': task_id,
                 'result': result.tolist()
             },
-            timeout=60
+            timeout=(5, 120)
         )
         return response.status_code == 200
     except Exception as e:
@@ -106,7 +109,7 @@ def process_strassen_divide_task(task):
     for i, product in enumerate(products):
         # Send each subtask back to coordinator for processing
         # In a real implementation, we might want to batch these
-        requests.post(
+        session.post(
             f"{COORDINATOR_URL}/return",
             json={
                 'matrix_a': product[0].tolist(),
@@ -183,4 +186,4 @@ if __name__ == '__main__':
     threading.Thread(target=register_loop).start()
     
     # Start the Flask application
-    app.run(host='0.0.0.0', port=PORT, threaded=True, request_timeout=120)
+    app.run(host='0.0.0.0', port=PORT, threaded=True, debug=False)
