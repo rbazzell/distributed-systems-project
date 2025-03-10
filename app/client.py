@@ -3,6 +3,7 @@ import time
 import numpy as np
 import requests
 import json
+import os
 
 def generate_random_matrix(rows, cols):
     """Generate a random matrix with integer values"""
@@ -87,14 +88,41 @@ def main():
     expected = matrix_a @ matrix_b
     print("\nExpected result:")
     print(expected)
+
+    curr_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(curr_dir)
+    print(curr_dir)
+    print(parent_dir)
     
+    with open("app/data/expected_results.txt", 'w') as f:
+        f.write("; ".join(" ".join(str(x)) for x in expected.tolist()))
+    
+    # Delete previous task's result
+    if os.path.exists("app/data/results.txt"):
+        os.remove("app/data/results.txt")
+
+
+
     # Submit task to coordinator
     print("\nSubmitting task to coordinator...")
     task_id = multiply_matrices(coordinator_url, matrix_a, matrix_b)
-    
-    if task_id:
-        print(f"Task submitted with ID: {task_id}")
-        print("Check the coordinator logs for the final result.")
+
+    if not task_id:
+        return
+
+    print("Final result can be found in app/data/results.txt or in the console log of the coordinator")
+    print("Waiting for result to validate...")
+    while not os.path.exists("app/data/results.txt"): pass
+    with open("app/data/results.txt", 'r') as f:
+        result = np.matrix(f.read())
+    print("\nResult:")
+    print(result)
+
+    if result == expected:
+        print("Results match!")
+    else:
+        print("Results do not match!")
+
     
 if __name__ == "__main__":
     main()

@@ -1,7 +1,0 @@
-FROM python:3.9-slim
-WORKDIR /app
-COPY coordinator.py .
-COPY util.py .
-COPY input.txt .
-RUN pip install numpy
-CMD ["python", "coordinator.py"]

@@ -112,7 +112,7 @@ def process_result(task_id, result):
                 
                 print(f"Final result for task {task_id}:\n{result}")
                 with open("/app/data/results.txt", 'w') as f:
-                    f.write(str(result))
+                    f.write(str(result.tolist()))
 
                 # Clean up
                 del client_tasks[task_id]

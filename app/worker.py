@@ -14,6 +14,8 @@ app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
 session = create_retry_session()
 
+MIN_MULTIPLY = 2
+
 # Environment variables
 NODE_ID = os.environ.get('NODE_ID', '0')
 PORT = int(os.environ.get('PORT', 5001))
@@ -21,6 +23,7 @@ COORDINATOR_HOST = os.environ.get('COORDINATOR_HOST', 'coordinator')
 COORDINATOR_PORT = int(os.environ.get('COORDINATOR_PORT', 5000))
 COORDINATOR_URL = f"http://{COORDINATOR_HOST}:{COORDINATOR_PORT}"
 WORKER_URL = f"http://worker{NODE_ID}:{PORT}" if NODE_ID != 'coordinator' else f"http://localhost:{PORT}"
+MIN_MULTIPLY = int(os.environ.get('MIN_MULT', 2))
 
 def register_with_coordinator():
     """Register this worker with the coordinator"""
@@ -65,7 +68,7 @@ def process_multiply_task(task):
     task_id = task.task_id
     
     # Check if we can use direct multiplication (1x1 matrices or base case)
-    if matrix_a.shape[0] <= 2 or matrix_a.shape[1] <= 2 or matrix_b.shape[1] <= 2:
+    if matrix_a.shape[0] <= MIN_MULTIPLY or matrix_a.shape[1] <= MIN_MULTIPLY or matrix_b.shape[1] <= MIN_MULTIPLY:
         result = direct_matrix_multiplication(matrix_a, matrix_b)
         return send_result_to_coordinator(task_id, result)
     
