@@ -49,7 +49,7 @@ def send_result_to_coordinator(task_id, result):
                 'task_id': task_id,
                 'result': result.tolist()
             },
-            timeout=10
+            timeout=60
         )
         return response.status_code == 200
     except Exception as e:
@@ -183,4 +183,4 @@ if __name__ == '__main__':
     threading.Thread(target=register_loop).start()
     
     # Start the Flask application
-    app.run(host='0.0.0.0', port=PORT)
+    app.run(host='0.0.0.0', port=PORT, threaded=True, request_timeout=120)

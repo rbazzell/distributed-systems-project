@@ -5,6 +5,8 @@ services:
     ports:
       - "5000:5000"
     command: python -u coordinator.py
+    volumes: 
+      - "./app/:/app"
     networks:
       - strassen_network
     environment:
@@ -66,6 +68,145 @@ services:
       - COORDINATOR_HOST=coordinator
       - COORDINATOR_PORT=5000
       - PORT=5004
+
+  worker5:
+    build: .
+    container_name: worker5
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=5
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5005
+
+  worker6:
+    build: .
+    container_name: worker6
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=6
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5006
+
+  worker7:
+    build: .
+    container_name: worker7
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=7
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5007
+
+  worker8:
+    build: .
+    container_name: worker8
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=8
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5008
+  worker9:
+    build: .
+    container_name: worker9
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=9
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5009
+  worker10:
+    build: .
+    container_name: worker10
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=10
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5010
+
+  worker11:
+    build: .
+    container_name: worker11
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=11
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5011
+
+  worker12:
+    build: .
+    container_name: worker12
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=12
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5012
+    
+  worker13:
+    build: .
+    container_name: worker13
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=13
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5013
+
+  worker14:
+    build: .
+    container_name: worker14
+    depends_on:
+      - coordinator
+    command: python -u worker.py
+    networks:
+      - strassen_network
+    environment:
+      - NODE_ID=14
+      - COORDINATOR_HOST=coordinator
+      - COORDINATOR_PORT=5000
+      - PORT=5014
+  
 
 networks:
   strassen_network:

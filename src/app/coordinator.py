@@ -52,7 +52,7 @@ def send_task_to_worker(worker_url, task):
         response = requests.post(
             f"{worker_url}/process",
             json=task.to_dict(),
-            timeout=10
+            timeout=60,
         )
         return response.status_code == 200
     except Exception as e:
@@ -108,6 +108,8 @@ def process_result(task_id, result):
                     result = unpad_matrix(result, original_shapes[0], original_shapes[1])
                 
                 print(f"Final result for task {task_id}:\n{result}")
+                with open("/app/data/results.txt", 'w') as f:
+                    f.write(str(result))
 
                 # Clean up
                 del client_tasks[task_id]
@@ -232,4 +234,4 @@ def receive_result():
 
 if __name__ == '__main__':
     print(f"Starting coordinator node (ID: {NODE_ID}) on port {PORT}")
-    app.run(host='0.0.0.0', port=PORT)
+    app.run(host='0.0.0.0', port=PORT, threaded=True, request_timeout=120)

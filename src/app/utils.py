@@ -3,7 +3,9 @@ import hashlib
 import json
 import time
 from enum import Enum
-
+import requests
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 class TaskType(Enum):
     MULTIPLY = "multiply"
@@ -156,3 +158,15 @@ def direct_matrix_multiplication(A, B):
     Direct matrix multiplication for small matrices
     """
     return A @ B
+
+def create_retry_session(retries=3, backoff_factor=0.5, status_forcelist=(500, 502, 503, 504, 104)):
+    session = requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
