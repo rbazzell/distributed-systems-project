@@ -29,6 +29,146 @@ services:
     image: alpine:latest
     networks:
     - csce689-project-network
+  worker10:
+    build: .
+    command: python -u worker.py
+    container_name: worker10
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=10
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5010
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker11:
+    build: .
+    command: python -u worker.py
+    container_name: worker11
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=11
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5011
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker12:
+    build: .
+    command: python -u worker.py
+    container_name: worker12
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=12
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5012
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker13:
+    build: .
+    command: python -u worker.py
+    container_name: worker13
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=13
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5013
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker14:
+    build: .
+    command: python -u worker.py
+    container_name: worker14
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=14
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5014
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker15:
+    build: .
+    command: python -u worker.py
+    container_name: worker15
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=15
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5015
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker16:
+    build: .
+    command: python -u worker.py
+    container_name: worker16
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=16
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5016
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker17:
+    build: .
+    command: python -u worker.py
+    container_name: worker17
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=17
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5017
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker18:
+    build: .
+    command: python -u worker.py
+    container_name: worker18
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=18
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5018
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker19:
+    build: .
+    command: python -u worker.py
+    container_name: worker19
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=19
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5019
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
   worker2:
     build: .
     command: python -u worker.py
@@ -42,6 +182,132 @@ services:
     - PORT=5002
     - MIN_MULT=16
     image: debian:stable-slim
+    networks:
+    - csce689-project-network
+  worker20:
+    build: .
+    command: python -u worker.py
+    container_name: worker20
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=20
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5020
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker21:
+    build: .
+    command: python -u worker.py
+    container_name: worker21
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=21
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5021
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker22:
+    build: .
+    command: python -u worker.py
+    container_name: worker22
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=22
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5022
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker23:
+    build: .
+    command: python -u worker.py
+    container_name: worker23
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=23
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5023
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker24:
+    build: .
+    command: python -u worker.py
+    container_name: worker24
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=24
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5024
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker25:
+    build: .
+    command: python -u worker.py
+    container_name: worker25
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=25
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5025
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker26:
+    build: .
+    command: python -u worker.py
+    container_name: worker26
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=26
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5026
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker27:
+    build: .
+    command: python -u worker.py
+    container_name: worker27
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=27
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5027
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker28:
+    build: .
+    command: python -u worker.py
+    container_name: worker28
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=28
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5028
+    - MIN_MULT=16
     networks:
     - csce689-project-network
   worker3:
@@ -112,6 +378,34 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5007
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker8:
+    build: .
+    command: python -u worker.py
+    container_name: worker8
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=8
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5008
+    - MIN_MULT=16
+    networks:
+    - csce689-project-network
+  worker9:
+    build: .
+    command: python -u worker.py
+    container_name: worker9
+    depends_on:
+    - coordinator
+    environment:
+    - NODE_ID=9
+    - COORDINATOR_HOST=coordinator
+    - COORDINATOR_PORT=5000
+    - PORT=5009
     - MIN_MULT=16
     networks:
     - csce689-project-network

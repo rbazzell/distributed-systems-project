@@ -53,7 +53,10 @@ def main():
         print("   OR: python client.py <coordinator_url> -f <filepath>")
         print("Example: python client.py http://localhost:5000 4,4 4,3")
         print("     OR: python client.py http://localhost:5000 -f data/matrices.txt")
-        return
+        return 1
+    
+    if len(sys.argv) == 6:
+        log = True
     
     coordinator_url = sys.argv[1]
     
@@ -61,7 +64,7 @@ def main():
         filename = sys.argv[3]
         matrix_a, matrix_b = retrieve_matrices_from_file(filename)
         if not isinstance(matrix_a, np.matrix) or not isinstance(matrix_b, np.matrix):
-            return
+            return 1
     else:
         # Parse matrix sizes
         a_size = [int(x) for x in sys.argv[2].split(',')]
@@ -69,11 +72,11 @@ def main():
     
         if len(a_size) != 2 or len(b_size) != 2:
             print("Matrix sizes should be specified as rows,cols")
-            return
+            return 1
         
         if a_size[1] != b_size[0]:
             print(f"Incompatible matrix dimensions: {a_size} and {b_size}")
-            return
+            return 1
     
         # Generate random matrices
         matrix_a = generate_random_matrix(a_size[0], a_size[1])
@@ -88,14 +91,9 @@ def main():
     expected = matrix_a @ matrix_b
     print("\nExpected result:")
     print(expected)
-
-    curr_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(curr_dir)
-    print(curr_dir)
-    print(parent_dir)
     
     with open("app/data/expected_results.txt", 'w') as f:
-        f.write("; ".join(" ".join(str(x)) for x in expected.tolist()))
+        f.write(";\n".join(" ".join(str(y) for y in x) for x in expected.tolist()))
     
     # Delete previous task's result
     if os.path.exists("app/data/results.txt"):
@@ -108,21 +106,26 @@ def main():
     task_id = multiply_matrices(coordinator_url, matrix_a, matrix_b)
 
     if not task_id:
-        return
+        return 1
 
     print("Final result can be found in app/data/results.txt or in the console log of the coordinator")
     print("Waiting for result to validate...")
     while not os.path.exists("app/data/results.txt"): pass
+    time.sleep(0.25)
     with open("app/data/results.txt", 'r') as f:
-        result = np.matrix(f.read())
+        result = f.read()
+    result = np.matrix(result)
     print("\nResult:")
     print(result)
 
-    if result == expected:
+    if result.shape == expected.shape and (result == expected).all():
         print("Results match!")
+        return 0
     else:
         print("Results do not match!")
+        return 1
 
     
 if __name__ == "__main__":
-    main()
+    code = main()
+    exit(code)

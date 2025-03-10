@@ -111,8 +111,9 @@ def process_result(task_id, result):
                     result = unpad_matrix(result, original_shapes[0], original_shapes[1])
                 
                 print(f"Final result for task {task_id}:\n{result}")
+                print(result.tolist())
                 with open("/app/data/results.txt", 'w') as f:
-                    f.write(str(result.tolist()))
+                    f.write(";\n".join(" ".join(str(y) for y in x) for x in result.tolist()))
 
                 # Clean up
                 del client_tasks[task_id]
