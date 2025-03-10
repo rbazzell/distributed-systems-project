@@ -15,6 +15,7 @@ services:
 
   worker1:
     build: .
+    image: "alpine:latest"
     container_name: worker1
     depends_on:
       - coordinator
@@ -29,6 +30,7 @@ services:
 
   worker2:
     build: .
+    image: "debian:stable-slim"
     container_name: worker2
     depends_on:
       - coordinator
@@ -43,6 +45,7 @@ services:
 
   worker3:
     build: .
+    image: "fedora:latest"
     container_name: worker3
     depends_on:
       - coordinator
