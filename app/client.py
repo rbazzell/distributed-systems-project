@@ -4,6 +4,7 @@ import numpy as np
 import requests
 import json
 import os
+import csv
 
 def generate_random_matrix(rows, cols):
     """Generate a random matrix with integer values"""
@@ -57,6 +58,7 @@ def main():
     
     if len(sys.argv) == 6:
         log = True
+        log_file = sys.argv[5]
     
     coordinator_url = sys.argv[1]
     
@@ -88,12 +90,17 @@ def main():
     print(matrix_b)
     
     # Expected result using numpy
+    start_time = time.time_ns()
     expected = matrix_a @ matrix_b
+    end_time = time.time_ns()
     print("\nExpected result:")
     print(expected)
+
+    expected_time = end_time - start_time
     
     with open("app/data/expected_results.txt", 'w') as f:
         f.write(";\n".join(" ".join(str(y) for y in x) for x in expected.tolist()))
+
     
     # Delete previous task's result
     if os.path.exists("app/data/results.txt"):
@@ -103,6 +110,8 @@ def main():
 
     # Submit task to coordinator
     print("\nSubmitting task to coordinator...")
+    
+    start_time = time.time_ns()
     task_id = multiply_matrices(coordinator_url, matrix_a, matrix_b)
 
     if not task_id:
@@ -111,12 +120,19 @@ def main():
     print("Final result can be found in app/data/results.txt or in the console log of the coordinator")
     print("Waiting for result to validate...")
     while not os.path.exists("app/data/results.txt"): pass
+    end_time = time.time_ns()
+
+    result_time = end_time - start_time
     time.sleep(0.25)
     with open("app/data/results.txt", 'r') as f:
         result = f.read()
     result = np.matrix(result)
     print("\nResult:")
     print(result)
+    if log:
+        with open(log_file, "a", newline='') as c:
+            writer = csv.writer(c, delimiter=',')
+            writer.writerow(a_size + b_size + [expected_time / 1e6, result_time / 1e6]) # time in ms
 
     if result.shape == expected.shape and (result == expected).all():
         print("Results match!")

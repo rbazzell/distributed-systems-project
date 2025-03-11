@@ -1,5 +1,5 @@
 {
-    "num_of_workers": 49,
+    "num_of_workers": 20,
     "images": ["alpine:latest", "debian:stable-slim", "fedora:latest"],
     "min_mult": 256
 }

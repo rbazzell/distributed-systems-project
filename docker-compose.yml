@@ -25,7 +25,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5001
-    - MIN_MULT=16
+    - MIN_MULT=256
     image: alpine:latest
     networks:
     - csce689-project-network
@@ -40,7 +40,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5010
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker11:
@@ -54,7 +54,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5011
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker12:
@@ -68,7 +68,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5012
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker13:
@@ -82,7 +82,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5013
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker14:
@@ -96,7 +96,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5014
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker15:
@@ -110,7 +110,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5015
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker16:
@@ -124,7 +124,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5016
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker17:
@@ -138,7 +138,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5017
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker18:
@@ -152,7 +152,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5018
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker19:
@@ -166,7 +166,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5019
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker2:
@@ -180,7 +180,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5002
-    - MIN_MULT=16
+    - MIN_MULT=256
     image: debian:stable-slim
     networks:
     - csce689-project-network
@@ -195,119 +195,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5020
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker21:
-    build: .
-    command: python -u worker.py
-    container_name: worker21
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=21
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5021
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker22:
-    build: .
-    command: python -u worker.py
-    container_name: worker22
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=22
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5022
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker23:
-    build: .
-    command: python -u worker.py
-    container_name: worker23
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=23
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5023
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker24:
-    build: .
-    command: python -u worker.py
-    container_name: worker24
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=24
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5024
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker25:
-    build: .
-    command: python -u worker.py
-    container_name: worker25
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=25
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5025
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker26:
-    build: .
-    command: python -u worker.py
-    container_name: worker26
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=26
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5026
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker27:
-    build: .
-    command: python -u worker.py
-    container_name: worker27
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=27
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5027
-    - MIN_MULT=16
-    networks:
-    - csce689-project-network
-  worker28:
-    build: .
-    command: python -u worker.py
-    container_name: worker28
-    depends_on:
-    - coordinator
-    environment:
-    - NODE_ID=28
-    - COORDINATOR_HOST=coordinator
-    - COORDINATOR_PORT=5000
-    - PORT=5028
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker3:
@@ -321,7 +209,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5003
-    - MIN_MULT=16
+    - MIN_MULT=256
     image: fedora:latest
     networks:
     - csce689-project-network
@@ -336,7 +224,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5004
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker5:
@@ -350,7 +238,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5005
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker6:
@@ -364,7 +252,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5006
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker7:
@@ -378,7 +266,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5007
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker8:
@@ -392,7 +280,7 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5008
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network
   worker9:
@@ -406,6 +294,6 @@ services:
     - COORDINATOR_HOST=coordinator
     - COORDINATOR_PORT=5000
     - PORT=5009
-    - MIN_MULT=16
+    - MIN_MULT=256
     networks:
     - csce689-project-network

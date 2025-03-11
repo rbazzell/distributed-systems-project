@@ -112,8 +112,8 @@ def pad_matrices(A, B):
         m *= 2
         
     # Pad matrices
-    A_padded = np.zeros((m, m))
-    B_padded = np.zeros((m, m))
+    A_padded = np.zeros((m, m), dtype=np.int32)
+    B_padded = np.zeros((m, m), dtype=np.int32)
     
     A_padded[:A.shape[0], :A.shape[1]] = A
     B_padded[:B.shape[0], :B.shape[1]] = B
@@ -144,7 +144,7 @@ def join_matrices(c11, c12, c21, c22):
     Join 4 quadrants into a single matrix
     """
     n = c11.shape[0]
-    result = np.zeros((2*n, 2*n))
+    result = np.zeros((2*n, 2*n), dtype=np.int32)
     
     result[:n, :n] = c11
     result[:n, n:] = c12
