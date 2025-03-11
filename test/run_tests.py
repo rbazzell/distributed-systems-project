@@ -90,6 +90,7 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("small scale diagnostic", tests, log_file)
             case 2:
                 test = ("16x16 @ 16x16", "16,16 16,16", complete)
@@ -99,6 +100,7 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("small scale performance", tests, log_file)
             case 3:
                 tests = [("16x16 @ 16x16", "16,16 16,16", complete), 
@@ -116,6 +118,7 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("medium scale diagnostic", tests, log_file) 
             case 4:
                 test = ("128x128 @ 128x128", "128,128 128,128", complete)
@@ -125,18 +128,20 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("medium scale performance", tests, log_file)
             case 5:
                 tests = [("256x256 @ 256x256", "256,256 256,256", complete), 
                          ("512x512 @ 512x512", "512,512 512,512", complete),
                          ("1024x1024 @ 1024x1024", "1024,1024 1024,1024", complete),
                          ("2048x2048 @ 2048x2048", "2048,2048 2048,2048", complete),
-                         ("16x32 @ 32x1024", "16,32 32,1024", complete),] 
+                         ("1024x32 @ 32x1024", "1024,64 64,1024", complete),] 
                 generator_file = "test/generators/large_scale.json"
                 log_file = "test/logs/large_scale_diagnostic.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("large scale diagnostic", tests, log_file)
             case 6:
                 test = ("2048x2048 @ 2048x2048", "2048,2048 2048,2048", complete)
@@ -146,6 +151,7 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("large scale performance", tests, log_file)
             case 7:
                 tests = [("2048x2048 @ 2048x2048", "2048,2048 2048,2048", complete), 
@@ -156,6 +162,7 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("very large scale diagnostic", tests, log_file)
             case 8:
                 test = ("8192x8192 @ 8192x8192", "8192,8192 8192,8192", complete)
@@ -165,6 +172,7 @@ if __name__ == '__main__':
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
+                time.sleep(1)
                 perform_tests("very large scale performance", tests, log_file)
             case _:
                 console.print("[bold red]Invalid option! Try again")
