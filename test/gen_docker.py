@@ -75,7 +75,7 @@ def main(default_file=None):
             while not data:
                 try:
                     filepath = input("What is the file path of the configuration file? (from root project directory): ")
-                    data = pull_config_from_file("../"+filepath)
+                    data = pull_config_from_file(f"{parent_dir}/"+filepath)
                 except Exception as e:
                     print(f"Error reading file: {e}")
                     print("Please try again")
@@ -94,7 +94,7 @@ def main(default_file=None):
         docker = dict()
         docker["networks"] = generate_network() 
         docker["services"] = generate_services(num_of_workers=num_of_workers, images=images, min_mult=min_mult)
-    write_compose_to_file("docker-compose.yml", docker)
+    write_compose_to_file(f"{parent_dir}/docker-compose.yml", docker)
 
 if __name__ == '__main__':
     if len(sys.argv) > 2 and sys.argv[1] == '-f':

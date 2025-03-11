@@ -3,14 +3,15 @@ import time
 from rich.console import Console
 
 console = Console()
+cwd = os.getcwd()
 
 def run(command: str, output=False):
     if not output:
-        command += " > /dev/null 2>&1"
+        command += " > NUL"
     return os.system(command)
 
 def run_client(parameters:str, log_file: str, output=False):
-    command = f"python app/client.py http://localhost:5000 {parameters} -l {log_file}"
+    command = f"python {cwd}/app/client.py http://localhost:5000 {parameters} -l {log_file}"
     return run(command, output=output)
 
 def complete(a):
@@ -21,7 +22,7 @@ def error(a):
 
 def create_docker(generator_file, output=False):
     with console.status("[bold yellow]Initiating Docker setup...") as status:
-        run(f"python test/gen_docker.py -f {generator_file}")
+        run(f"python {cwd}/test/gen_docker.py -f {generator_file}")
         console.print("Docker files generated!")
         run("docker-compose up -d --build", output=output)
     console.print("[green]Docker initiated!")
@@ -85,8 +86,8 @@ if __name__ == '__main__':
                          ("3x3 @ 3x3", "3,3 3,3", complete),
                          ("4x4 @ 4x4", "4,4 4,4", complete),
                          ("3x4 @ 4x8", "3,4 4,8", complete),] 
-                generator_file = "test/generators/small_scale.json"
-                log_file = "test/logs/small_scale_diagnostic.csv"
+                generator_file = f"{cwd}/test/generators/small_scale.json"
+                log_file = f"{cwd}/test/logs/small_scale_diagnostic.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -95,8 +96,8 @@ if __name__ == '__main__':
             case 2:
                 test = ("16x16 @ 16x16", "16,16 16,16", complete)
                 tests = [test] * 20
-                generator_file = "test/generators/small_scale.json"
-                log_file = "test/logs/small_scale_performance.csv"
+                generator_file = f"{cwd}/test/generators/small_scale.json"
+                log_file = f"{cwd}/test/logs/small_scale_performance.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -113,8 +114,8 @@ if __name__ == '__main__':
                          ("256x256 @ 256x256", "256,256 256,256", complete),]
                 
 
-                generator_file = "test/generators/medium_scale.json"
-                log_file = "test/logs/medium_scale_diagnostic.csv"
+                generator_file = f"{cwd}/test/generators/medium_scale.json"
+                log_file = f"{cwd}/test/logs/medium_scale_diagnostic.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -123,8 +124,8 @@ if __name__ == '__main__':
             case 4:
                 test = ("128x128 @ 128x128", "128,128 128,128", complete)
                 tests = [test] * 20
-                generator_file = "test/generators/medium_scale.json"
-                log_file = "test/logs/medium_scale_performance.csv"
+                generator_file = f"{cwd}/test/generators/medium_scale.json"
+                log_file = f"{cwd}/test/logs/medium_scale_performance.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -136,8 +137,8 @@ if __name__ == '__main__':
                          ("1024x1024 @ 1024x1024", "1024,1024 1024,1024", complete),
                          ("2048x2048 @ 2048x2048", "2048,2048 2048,2048", complete),
                          ("1024x32 @ 32x1024", "1024,64 64,1024", complete),] 
-                generator_file = "test/generators/large_scale.json"
-                log_file = "test/logs/large_scale_diagnostic.csv"
+                generator_file = f"{cwd}/test/generators/large_scale.json"
+                log_file = f"{cwd}/test/logs/large_scale_diagnostic.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -146,8 +147,8 @@ if __name__ == '__main__':
             case 6:
                 test = ("2048x2048 @ 2048x2048", "2048,2048 2048,2048", complete)
                 tests = [test] * 20
-                generator_file = "test/generators/large_scale.json"
-                log_file = "test/logs/large_scale_performance.csv"
+                generator_file = f"{cwd}/test/generators/large_scale.json"
+                log_file = f"{cwd}/test/logs/large_scale_performance.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -157,8 +158,8 @@ if __name__ == '__main__':
                 tests = [("2048x2048 @ 2048x2048", "2048,2048 2048,2048", complete), 
                          ("4096x4096 @ 4096x4096", "4096,4096 4096,4096", complete),
                          ("8192x8192 @ 8192x8192", "8192,8192 8192,8192", complete),] 
-                generator_file = "test/generators/very_large_scale.json"
-                log_file = "test/logs/very_large_scale_diagnostic.csv"
+                generator_file = f"{cwd}/test/generators/very_large_scale.json"
+                log_file = f"{cwd}/test/logs/very_large_scale_diagnostic.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
@@ -167,8 +168,8 @@ if __name__ == '__main__':
             case 8:
                 test = ("8192x8192 @ 8192x8192", "8192,8192 8192,8192", complete)
                 tests = [test] * 20
-                generator_file = "test/generators/very_large_scale.json"
-                log_file = "test/logs/very_large_scale_performance.csv"
+                generator_file = f"{cwd}/test/generators/very_large_scale.json"
+                log_file = f"{cwd}/test/logs/very_large_scale_performance.csv"
 
                 create_docker(generator_file)
                 clear_log_file(log_file)
