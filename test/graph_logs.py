@@ -7,6 +7,8 @@ def plot_computation_times(csv_file, output_file, title=None, show_averages=Fals
     # Read CSV file with no headers using csv library
     local_times = []
     distributed_times = []
+    sizes = []
+
     
     with open(csv_file, 'r') as file:
         csv_reader = csv.reader(file)
@@ -18,6 +20,7 @@ def plot_computation_times(csv_file, output_file, title=None, show_averages=Fals
             try:
                 local_times.append(float(row[4]))
                 distributed_times.append(float(row[5]))
+                sizes.append((int(row[0]), int(row[1]), int(row[2]), int(row[3])))
             except ValueError:
                 print(f"Warning: Could not convert values to float in row: {row}")
                 continue
@@ -78,8 +81,8 @@ def plot_computation_times(csv_file, output_file, title=None, show_averages=Fals
     else:
         plt.title('Comparison of Computation Times: Local vs Distributed Hardware')
     
-    if title.lower() == "Large Scale Diagnostic".lower():
-        plt.xticks(test_cases, [f"{x}x{x} @ {x}x{x}" for x in [256, 512, 1024, 2048]])
+    if "diagnostic" in title.lower():
+        plt.xticks(test_cases, [f"{ar}x{ac}@{br}x{bc}" for ar, ac, br, bc in sizes])
     else:
         plt.xticks(test_cases)
     plt.legend()
