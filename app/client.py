@@ -2,7 +2,6 @@ import sys
 import time
 import numpy as np
 import requests
-import json
 import os
 import csv
 
@@ -62,6 +61,7 @@ def main():
     
     coordinator_url = sys.argv[1]
     
+    #either pulls matrices from a file or randomly generates a matrix
     if sys.argv[2] == "-f":
         filename = sys.argv[3]
         matrix_a, matrix_b = retrieve_matrices_from_file(filename)
@@ -89,7 +89,7 @@ def main():
     print("\nMatrix B:")
     print(matrix_b)
     
-    # Expected result using numpy
+    # Calculate expected result using numpy
     start_time = time.time_ns()
     expected = matrix_a @ matrix_b
     end_time = time.time_ns()
@@ -98,7 +98,7 @@ def main():
 
     expected_time = end_time - start_time
     
-    with open("app/data/expected_results.txt", 'w') as f:
+    with open("app/data/expected.txt", 'w') as f:
         f.write(";\n".join(" ".join(str(y) for y in x) for x in expected.tolist()))
 
     
@@ -124,16 +124,24 @@ def main():
 
     result_time = end_time - start_time
     time.sleep(0.25)
+
     with open("app/data/results.txt", 'r') as f:
         result = f.read()
+    with open("app/data/expected.txt") as f:
+        expected = f.read()
     result = np.matrix(result)
+    expected = np.matrix(result)
     print("\nResult:")
     print(result)
+
+    #log computation times
     if log:
         with open(log_file, "a", newline='') as c:
             writer = csv.writer(c, delimiter=',')
             writer.writerow(a_size + b_size + [expected_time / 1e6, result_time / 1e6]) # time in ms
 
+    # validate results
+    # for some reason, it isn't working with matrices of large size (> 1024x1024). Likely due to memory constraints
     if result.shape == expected.shape and (result == expected).all():
         print("Results match!")
         return 0

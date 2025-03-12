@@ -1,9 +1,6 @@
 import os
-import json
-import time
 import numpy as np
 import threading
-import requests
 import logging
 from flask import Flask, request, jsonify
 
@@ -89,7 +86,7 @@ def process_result(task_id, result):
                 # Create combine task
                 all_results = pending_results[parent_id][1]
                 combine_task = Task(
-                    task_type=TaskType.STRASSEN_COMBINE,
+                    task_type=TaskType.COMBINE,
                     subtasks_results=all_results,
                     parent_id=parent_id
                 )
@@ -187,7 +184,7 @@ def submit_task():
 
 @app.route('/return', methods=['POST'])
 def return_task():
-    """Endpoint for clients to submit matrix multiplication tasks"""
+    """Endpoint for workers to submit matrix multiplication subtasks"""
     data = request.json
     matrix_a = np.array(data.get('matrix_a', []))
     matrix_b = np.array(data.get('matrix_b', []))

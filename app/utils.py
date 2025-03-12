@@ -1,7 +1,5 @@
 import numpy as np
 import hashlib
-import json
-import time
 from enum import Enum
 import requests
 from urllib3.util.retry import Retry
@@ -9,19 +7,16 @@ from requests.adapters import HTTPAdapter
 
 class TaskType(Enum):
     MULTIPLY = "multiply"
-    STRASSEN_DIVIDE = "strassen_divide"
-    STRASSEN_COMBINE = "strassen_combine"
-    DIRECT_MULTIPLY = "direct_multiply"
+    COMBINE = "combine"
 
 class Task:
     def __init__(self, task_type, matrices=None, subtasks_results=None, parent_id=None, m_number=None):
         self.task_type = task_type
-        self.matrices = matrices  # For MULTIPLY and STRASSEN_DIVIDE: [A, B]
-        self.subtasks_results = subtasks_results  # For STRASSEN_COMBINE: [M1, M2, ..., M7]
-        self.m_number = m_number
+        self.matrices = matrices  # For MULTIPLY : [A, B]
+        self.subtasks_results = subtasks_results  # For COMBINE: [M1, M2, ..., M7]
+        self.m_number = m_number # Also for COMBINE
         self.parent_id = parent_id  # ID of the parent task
-        self.created_at = time.time()
-        
+
         # Generate task ID based on content
         self.task_id = self._generate_id()
         
@@ -34,24 +29,10 @@ class Task:
             content_hash = hashlib.md5(np.array_str(matrix_a).encode() + np.array_str(matrix_b).encode()).hexdigest()[:6]
             return f"{self.task_type.value}_{dim_str}_{content_hash}"
         
-        elif self.task_type == TaskType.STRASSEN_DIVIDE:
-            # Use matrix dimensions and hash of content
-            matrix_a, matrix_b = self.matrices
-            dim_str = f"{matrix_a.shape[0]}x{matrix_a.shape[1]}"
-            content_hash = hashlib.md5(np.array_str(matrix_a).encode() + np.array_str(matrix_b).encode()).hexdigest()[:6]
-            return f"{self.task_type.value}_{dim_str}_{content_hash}"
-        
-        elif self.task_type == TaskType.STRASSEN_COMBINE:
+        elif self.task_type == TaskType.COMBINE:
             # Use parent_id if available, otherwise timestamp
             base = self.parent_id if self.parent_id else str(int(self.created_at))
             return f"{self.task_type.value}_{base}_combine"
-        
-        elif self.task_type == TaskType.DIRECT_MULTIPLY:
-            # For small matrices
-            matrix_a, matrix_b = self.matrices
-            dim_str = f"{matrix_a.shape[0]}x{matrix_a.shape[1]}"
-            content_hash = hashlib.md5(np.array_str(matrix_a).encode() + np.array_str(matrix_b).encode()).hexdigest()[:6]
-            return f"{self.task_type.value}_{dim_str}_{content_hash}"
         
         # Fallback
         return f"{self.task_type.value}_{int(self.created_at)}"
@@ -62,7 +43,6 @@ class Task:
             "task_id": self.task_id,
             "task_type": self.task_type.value,
             "parent_id": self.parent_id,
-            "created_at": self.created_at,
             "m_number": self.m_number
         }
         
@@ -95,15 +75,12 @@ class Task:
             m_number=data.get("m_number")
         )
         task.task_id = data["task_id"]
-        task.created_at = data["created_at"]
         
         return task
 
 
 def pad_matrices(A, B):
-    """
-    Pad matrices to the next power of 2 if needed for Strassen's algorithm
-    """
+    """Pad matrices to the next power of 2 if needed for Strassen's algorithm"""
     n = max(A.shape[0], A.shape[1], B.shape[0], B.shape[1])
     
     # Find the next power of 2
@@ -121,15 +98,11 @@ def pad_matrices(A, B):
     return A_padded, B_padded, A.shape, B.shape
 
 def unpad_matrix(C_padded, original_A_shape, original_B_shape):
-    """
-    Extract original sized result from padded result matrix
-    """
+    """Extract original sized result from padded result matrix"""
     return C_padded[:original_A_shape[0], :original_B_shape[1]]
 
 def split_matrix(matrix):
-    """
-    Split matrix into 4 quadrants
-    """
+    """Split matrix into 4 quadrants"""
     n = matrix.shape[0] // 2
     
     a11 = matrix[:n, :n]
@@ -140,9 +113,7 @@ def split_matrix(matrix):
     return a11, a12, a21, a22
 
 def join_matrices(c11, c12, c21, c22):
-    """
-    Join 4 quadrants into a single matrix
-    """
+    """Join 4 quadrants into a single matrix"""
     n = c11.shape[0]
     result = np.zeros((2*n, 2*n), dtype=np.int32)
     
@@ -153,13 +124,8 @@ def join_matrices(c11, c12, c21, c22):
     
     return result
 
-def direct_matrix_multiplication(A, B):
-    """
-    Direct matrix multiplication for small matrices
-    """
-    return A @ B
-
 def create_retry_session(retries=3, backoff_factor=0.5, status_forcelist=(500, 502, 503, 504, 104)):
+    """Creates a session that automatically retries communication on a failure"""
     session = requests.Session()
     retry = Retry(
         total=retries,

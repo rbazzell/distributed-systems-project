@@ -1,20 +1,16 @@
 import os
 import time
-import json
 import numpy as np
-import requests
 from flask import Flask, request, jsonify
 import threading
 import logging
 
-from utils import Task, TaskType, split_matrix, join_matrices, direct_matrix_multiplication, create_retry_session
+from utils import Task, TaskType, split_matrix, join_matrices, create_retry_session
 
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
 session = create_retry_session()
-
-MIN_MULTIPLY = 2
 
 # Environment variables
 NODE_ID = os.environ.get('NODE_ID', '0')
@@ -69,18 +65,10 @@ def process_multiply_task(task):
     
     # Check if we can use direct multiplication (1x1 matrices or base case)
     if matrix_a.shape[0] <= MIN_MULTIPLY or matrix_a.shape[1] <= MIN_MULTIPLY or matrix_b.shape[1] <= MIN_MULTIPLY:
-        result = direct_matrix_multiplication(matrix_a, matrix_b)
+        result = matrix_a @ matrix_b
         return send_result_to_coordinator(task_id, result)
     
-    
-    # Process the divide task directly since we're already on a worker
-    return process_strassen_divide_task(task)
-
-def process_strassen_divide_task(task):
-    """Divide matrices according to Strassen's algorithm and create 7 subtasks"""
-    matrix_a, matrix_b = task.matrices
-    task_id = task.task_id
-    
+    # If not, we perform strassen's algorithm
     # Split matrices into quadrants
     a11, a12, a21, a22 = split_matrix(matrix_a)
     b11, b12, b21, b22 = split_matrix(matrix_b)
@@ -145,12 +133,6 @@ def process_strassen_combine_task(task):
     # Send the result back to the coordinator
     return send_result_to_coordinator(parent_id if parent_id else task_id, result)
 
-def process_direct_multiply_task(task):
-    """Directly multiply two matrices for base case"""
-    matrix_a, matrix_b = task.matrices
-    result = direct_matrix_multiplication(matrix_a, matrix_b)
-    return send_result_to_coordinator(task.task_id, result)
-
 @app.route('/process', methods=['POST'])
 def process_task():
     """Endpoint for processing a task"""
@@ -162,12 +144,8 @@ def process_task():
     # Process the task based on its type
     if task.task_type == TaskType.MULTIPLY:
         threading.Thread(target=process_multiply_task, args=(task,)).start()
-    elif task.task_type == TaskType.STRASSEN_DIVIDE:
-        threading.Thread(target=process_strassen_divide_task, args=(task,)).start()
-    elif task.task_type == TaskType.STRASSEN_COMBINE:
+    elif task.task_type == TaskType.COMBINE:
         threading.Thread(target=process_strassen_combine_task, args=(task,)).start()
-    elif task.task_type == TaskType.DIRECT_MULTIPLY:
-        threading.Thread(target=process_direct_multiply_task, args=(task,)).start()
     else:
         return jsonify({'error': 'Unknown task type'}), 400
     
