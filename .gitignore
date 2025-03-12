@@ -1,1 +1,5 @@
+test/logs/*
+test/graphs/*
+test/generators/*
+app/data/*
 boost_audio.py
