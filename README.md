@@ -1,4 +1,3 @@
-
 # Distributed Matrix Multiplication with Strassen's Algorithm
 
 This project implements a distributed system for matrix multiplication using Strassen's algorithm. The system consists of a coordinator node and multiple worker nodes that communicate via HTTP APIs.
@@ -14,15 +13,26 @@ This project implements a distributed system for matrix multiplication using Str
 
 ```
 project-root/
+├── app/
+│   ├── _pycache_/
+│   ├── data/
+|   |   ├── expected.txt
+|   │   └── results.txt
+│   ├── client.py
+│   ├── coordinator.py
+│   ├── utils.py
+│   └── worker.py
+├── test/
+│   ├── generators/
+│   ├── graphs/
+│   ├── logs/
+│   ├── gen_docker.py
+│   ├── graph_logs.py
+│   ├── run_tests_linux.py
+│   └── run_tests_windows.py
 ├── docker-compose.yml
 ├── Dockerfile
-├── README.md
-└── app/
-    ├── coordinator.py
-    ├── worker.py
-    ├── client.py
-    ├── utils.py
-    └── __init__.py
+└── README.md
 ```
 
 ## How It Works
@@ -33,13 +43,14 @@ project-root/
 4. The coordinator distributes these subtasks to workers
 5. This process continues recursively until the matrices are small enough for direct multiplication
 6. Results are passed back up the chain, with the coordinator managing the aggregation
-7. The final result is returned
+7. The final result is printed in the coordinator logs and to the app/data/results.txt file
+8. The client then retrieves this result and compares it with the expected result, optionally logging the computation time
 
 ## Task Identification
 
 Each task has a unique identifier based on:
 
-* Task type (multiply, divide, combine, direct_multiply)
+* Task type (multiply, combine)
 * Matrix dimensions
 * Content hash
 * Parent task ID (for subtasks)
@@ -51,18 +62,20 @@ This makes debugging easier by providing readable task IDs that help trace the c
 ### Prerequisites
 
 * Docker and Docker Compose
+* Python 3
 
 ### Starting the System
 
-1. Build and start the containers:
+1. Run
+2. Build and start the containers:
 
    ```
    docker-compose up --build
    ```
-2. Submit a matrix multiplication task using the client:
+3. Submit a matrix multiplication task using the client:
 
    ```
-   python app/client.py http://localhost:5000 4,4 4,3
+   python app/data/client.py http://localhost:5000 4,4 4,3
    ```
 
    Where `4,4` and `4,3` are the dimensions of matrices A and B respectively.
@@ -100,6 +113,14 @@ The traditional matrix multiplication requires O(n³) operations. Strassen's alg
 * Small matrices (dimensions <= 2) are multiplied directly for efficiency
 * Round-robin task distribution is used (can be enhanced with load balancing)
 * Threading is used to process tasks asynchronously
+
+## Testing and Performance Analysis
+
+The `test` directory contains tools for:
+* Generating test matrices (`generators/`)
+* Running performance tests on Linux and Windows (`run_tests_linux.py`, `run_tests_windows.py`)
+* Analyzing and visualizing results (`graph_logs.py`)
+* Performance data at different scales (`logs/`)
 
 ## Future Improvements
 
