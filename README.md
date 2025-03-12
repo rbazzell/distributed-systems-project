@@ -66,23 +66,54 @@ This makes debugging easier by providing readable task IDs that help trace the c
 
 ### Starting the System
 
-1. Run
+1. (Optional) Generate a new docker-compose.yml file:
+  
+   ```
+   python test/gen_docker.py -f <generator_file>
+   ```
+
+   Example generator files can be found in the test/generators directory
+
 2. Build and start the containers:
 
    ```
    docker-compose up --build
    ```
 3. Submit a matrix multiplication task using the client:
-
+   
+   For a random task:
    ```
-   python app/data/client.py http://localhost:5000 4,4 4,3
+   python app/client.py http://localhost:5000 4,4 4,3
    ```
-
    Where `4,4` and `4,3` are the dimensions of matrices A and B respectively.
+
+
+   For pre-determined matrix multiplication tasks:
+   ```
+   python app/client.py http://localhost:5000 -f <matrix_file>
+   ```
+
+### Testing the System
+
+1. Run the testing file for your appropriate operating system:
+
+   ```
+   python test/run_tests_<linux or windows>.py
+   ```
+
+2. Follow the prompts to select the performance suite you would like to run
+3. Observe the data in the tests/logs directory
+4. (Optional) Generate graphs of your data:
+
+   ```
+   python test/graph_logs.py <log_file> <output_file> <-t "graph title"> <-a>
+   ```
+
+   Where ```-t``` sets the title of the graph and ```-a``` puts the average times in the legend.
 
 ## Scaling
 
-You can add more worker nodes by modifying the `docker-compose.yml` file.
+You can modify the number of workers and the individual strength of each worker using generator files or by directly modifying the docker-compose.yml file.
 
 ## Implementation Details
 
@@ -117,17 +148,7 @@ The traditional matrix multiplication requires O(n³) operations. Strassen's alg
 ## Testing and Performance Analysis
 
 The `test` directory contains tools for:
-* Generating test matrices (`generators/`)
+* Generating Docker Compose environments (`generators/`)
 * Running performance tests on Linux and Windows (`run_tests_linux.py`, `run_tests_windows.py`)
 * Analyzing and visualizing results (`graph_logs.py`)
 * Performance data at different scales (`logs/`)
-
-## Future Improvements
-
-* Implement more sophisticated load balancing
-* Add support for worker failure and task reassignment
-* Optimize the threshold for direct multiplication vs. Strassen's algorithm
-* Add authentication between nodes
-* Implement batch processing for multiple small tasks
-* Add a web interface for monitoring system state
-* Include more comprehensive error handling and recovery
