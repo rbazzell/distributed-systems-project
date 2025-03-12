@@ -55,6 +55,7 @@ def main():
         print("     OR: python client.py http://localhost:5000 -f data/matrices.txt")
         return 1
     
+    log = False
     if len(sys.argv) == 6:
         log = True
         log_file = sys.argv[5]
